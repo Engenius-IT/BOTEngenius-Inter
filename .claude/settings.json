@@ -1,0 +1,8 @@
+{
+  "hasCompletedOnboarding": true,
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://localhost:20128/v1",
+    "ANTHROPIC_AUTH_TOKEN": "sk-1df94f374d400f9d-tyrud8-9a018cbd",
+    "ANTHROPIC_DEFAULT_MODEL": "zonten[1m]"
+  }
+}
