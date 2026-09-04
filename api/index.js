@@ -1,7 +1,5 @@
-import http from 'http';
-import server from '../server.js';
+import requestListener from '../server.js';
 
 export default function handler(req, res) {
-  // Pass req and res directly to Node server request listener
-  return server(req, res);
+  return requestListener(req, res);
 }
