@@ -277,7 +277,7 @@ async function getLINEUserProfile(userId) {
 
   try {
     const res = await fetch(`https://api.line.me/v2/bot/profile/${userId}`, {
-      headers: { 'Authorization': `Bearer ${LINE_ACCESS_TOKEN}` }
+      headers: { 'Authorization': `Bearer ${getLineAccessToken()}` }
     });
     if (res.ok) {
       const data = await res.json();
@@ -516,8 +516,8 @@ export function requestListener(req, res) {
     return;
   }
 
-  // Webhook Endpoint
-  if (req.method === 'POST' && (req.url.includes('webhook') || req.url === '/')) {
+  // Accept POST requests on any URL containing webhook or root
+  if (req.method === 'POST') {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', async () => {
@@ -651,7 +651,7 @@ export function requestListener(req, res) {
                 liveUsersMap[lineUserId].pauseDurationHours = 2;
               }
 
-              const confirmText = 'ปิดการทำงานของน้องบอทชั่วคราวเป็นเวลา 2 ชั่วโมงเรียบร้อยแล้วค่ะ แอดมินเจ้าหน้านที่จะเข้ามาดูแลและตอบกลับโดยเร็วที่สุดนะคะ! (หากต้องการเปิดใช้งานบอทก่อนครบกำหนด สามารถพิมพ์คำว่า "เปิดบอท" ได้ตลอดเวลาค่ะ)';
+              const confirmText = 'น้องบอททำการปิดระบบชั่วคราวให้เรียบร้อยแล้วค่ะ (ระยะเวลา 2 ชั่วโมง)\n\nระหว่างนี้แอดมินเจ้าหน้าที่กำลังเข้ามารับช่วงต่อดูแลนะคะ คุณลูกค้าสามารถพิมพ์ข้อความไว้ได้เลยค่ะ';
               liveChatLogs.push({
                 id: Date.now() + 1,
                 sender: 'bot',
