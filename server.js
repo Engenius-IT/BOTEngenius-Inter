@@ -399,7 +399,7 @@ async function pushLINE(toUserId, text) {
   }
 }
 
-const server = http.createServer((req, res) => {
+export function requestListener(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-line-signature');
@@ -411,7 +411,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Health check endpoint
-  if (req.method === 'GET' && (req.url === '/' || req.url === '/health')) {
+  if (req.method === 'GET' && (req.url === '/' || req.url === '/health' || req.url.includes('health'))) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: 'online',
@@ -447,7 +447,8 @@ const server = http.createServer((req, res) => {
             liveUsersMap[line_user_id].pausedUntil = null;
             liveUsersMap[line_user_id].pauseDurationHours = null;
           }
-          const resumeText = 'น้องบอทเปิดทำงานอีกครั้งเรียบร้อยแล้วค่ะ 💕 พิมพ์คำถามสอบถามได้เลยนะคะ';
+          
+          const resumeText = 'น้องบอทเปิดใช้งานและพร้อมกลับมาช่วยตอบคำถามตามปกติแล้วค่ะ สามารถพิมพ์คำถามสอบถามได้เลยนะคะ';
           liveChatLogs.push({
             id: Date.now(),
             sender: 'bot',
@@ -456,13 +457,11 @@ const server = http.createServer((req, res) => {
             line_user_id: line_user_id,
             created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
           });
+
           await pushLINE(line_user_id, resumeText);
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, message: 'Bot resumed' }));
-        } else {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'line_user_id is required' }));
         }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: 'Bot resumed' }));
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: err.message }));
@@ -471,19 +470,18 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // POST Send Message from Admin Web Dashboard to LINE User
-  if (req.method === 'POST' && req.url === '/api/line/send') {
+  // POST Admin Push Message Endpoint from Web UI
+  if (req.method === 'POST' && (req.url === '/api/line/send' || req.url === '/api/messages/send')) {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', async () => {
       try {
         const data = JSON.parse(body || '{}');
-        const { text, line_user_id, sender } = data;
-
+        const { line_user_id, text } = data;
         if (text) {
           const newMsg = {
             id: Date.now(),
-            sender: sender || 'admin',
+            sender: 'admin',
             platform: 'line',
             message: text,
             line_user_id: line_user_id || 'U9188449e7458f0441acd523ccd6a5cec',
@@ -621,7 +619,7 @@ const server = http.createServer((req, res) => {
                 liveUsersMap[lineUserId].pauseDurationHours = 1;
               }
 
-              const confirmText = 'ปิดการทำงานของน้องบอทชั่วคราวเป็นเวลา 1 ชั่วโมงเรียบร้อยแล้วค่ะ แอดมินเจ้าหน้านที่จะเข้ามาดูแลและตอบกลับโดยเร็วที่สุดนะคะ! (หากต้องการเปิดใช้งานบอทก่อนครบกำหนด สามารถพิมพ์คำว่า "เปิดบอท" ได้ตลอดเวลาค่ะ)';
+              const confirmText = 'น้องบอททำการปิดระบบชั่วคราวให้เรียบร้อยแล้วค่ะ (ระยะเวลา 1 ชั่วโมง)\n\nระหว่างนี้แอดมินเจ้าหน้าที่กำลังเข้ามารับช่วงต่อดูแลนะคะ คุณลูกค้าสามารถพิมพ์ข้อความไว้ได้เลยค่ะ';
               liveChatLogs.push({
                 id: Date.now() + 1,
                 sender: 'bot',
@@ -744,10 +742,13 @@ const server = http.createServer((req, res) => {
 
   res.writeHead(404, { 'Content-Type': 'text/plain' });
   res.end('Not Found');
-});
+}
 
-server.listen(PORT, () => {
-  console.log(`
+const server = http.createServer(requestListener);
+
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  server.listen(PORT, () => {
+    console.log(`
 ================================================================
 🌸 PHANX1 LINE Webhook & Live Chat Server Running on Port ${PORT}
 ================================================================
@@ -756,4 +757,8 @@ server.listen(PORT, () => {
 💬 Live Chat API: http://localhost:${PORT}/api/line/messages
 ================================================================
 `);
-});
+  });
+}
+
+export default requestListener;
+
