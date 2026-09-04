@@ -27,9 +27,14 @@ function loadEnv() {
 loadEnv();
 
 const PORT = process.env.SERVER_PORT || 3001;
-const LINE_CHANNEL_SECRET = process.env.LINE_CHANNEL_SECRET || '';
-const LINE_ACCESS_TOKEN = process.env.LINE_ACCESS_TOKEN || '';
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
+function getLineAccessToken() {
+  return process.env.LINE_ACCESS_TOKEN || '';
+}
+
+function getDeepseekApiKey() {
+  return process.env.DEEPSEEK_API_KEY || '';
+}
+
 
 // 👑 MASTER SYSTEM PROMPT DIRECTIVE FOR NONG INGKY (SMART SALES & ACCURATE DATA)
 const PHANX1_MASTER_PROMPT = `คุณคือแอดมินตอบแชทผู้ช่วย AI ประจำโครงการ Engenius (PHANX1)
@@ -216,7 +221,7 @@ async function generateNongIngkyReply(userMessage, ragResult) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+        'Authorization': `Bearer ${getDeepseekApiKey()}`
       },
       body: JSON.stringify({
         model: 'deepseek-chat',
@@ -334,11 +339,12 @@ const pauseDurationQuickReply = [
 // Helper to reply with LINE Quick Reply buttons
 async function replyLINEQuickReply(replyToken, text, quickReplyItems) {
   try {
+    const token = getLineAccessToken();
     const res = await fetch('https://api.line.me/v2/bot/message/reply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${LINE_ACCESS_TOKEN}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         replyToken: replyToken,
@@ -362,11 +368,12 @@ async function replyLINEQuickReply(replyToken, text, quickReplyItems) {
 // Reply back to LINE Messaging API
 async function replyLINE(replyToken, text) {
   try {
+    const token = getLineAccessToken();
     const res = await fetch('https://api.line.me/v2/bot/message/reply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${LINE_ACCESS_TOKEN}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         replyToken: replyToken,
@@ -382,11 +389,12 @@ async function replyLINE(replyToken, text) {
 // Push message to specific LINE User ID
 async function pushLINE(toUserId, text) {
   try {
+    const token = getLineAccessToken();
     const res = await fetch('https://api.line.me/v2/bot/message/push', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${LINE_ACCESS_TOKEN}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         to: toUserId,
@@ -490,7 +498,7 @@ export function requestListener(req, res) {
           liveChatLogs.push(newMsg);
 
           // Push directly to LINE if user ID provided
-          if (line_user_id && LINE_ACCESS_TOKEN) {
+          if (line_user_id && getLineAccessToken()) {
             await pushLINE(line_user_id, text);
           }
 
