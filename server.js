@@ -419,7 +419,7 @@ export function requestListener(req, res) {
   }
 
   // Health check endpoint
-  if (req.method === 'GET' && (req.url === '/' || req.url === '/health' || req.url.includes('health'))) {
+  if (req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: 'online',
