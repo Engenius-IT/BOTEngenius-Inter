@@ -441,7 +441,7 @@ export function requestListener(req, res) {
   }
 
   // POST Resume Bot Endpoint from Web UI
-  if (req.method === 'POST' && req.url === '/api/line/resume-bot') {
+  if (req.method === 'POST' && req.url.includes('resume-bot')) {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', async () => {
@@ -479,7 +479,7 @@ export function requestListener(req, res) {
   }
 
   // POST Admin Push Message Endpoint from Web UI
-  if (req.method === 'POST' && (req.url === '/api/line/send' || req.url === '/api/messages/send')) {
+  if (req.method === 'POST' && (req.url.includes('send') || req.url.includes('messages'))) {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', async () => {
