@@ -26,7 +26,7 @@ function loadEnv() {
 
 loadEnv();
 
-const PORT = process.env.SERVER_PORT || 3001;
+const PORT = process.env.PORT || process.env.SERVER_PORT || 3001;
 function getLineAccessToken() {
   return process.env.LINE_ACCESS_TOKEN || '';
 }
