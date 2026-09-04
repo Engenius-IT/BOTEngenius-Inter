@@ -754,7 +754,7 @@ export function requestListener(req, res) {
 
 const server = http.createServer(requestListener);
 
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+if (!process.env.VERCEL) {
   server.listen(PORT, () => {
     console.log(`
 ================================================================
@@ -769,4 +769,5 @@ if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
 }
 
 export default requestListener;
+
 
