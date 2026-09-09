@@ -72,8 +72,8 @@ export function searchSupabaseRAG(userQuery: string): RAGSearchResult {
       hasKeyword = true;
     }
 
-    if ((queryLower.includes('ราคา') || queryLower.includes('ค่าใช้จ่าย') || queryLower.includes('กี่บาท') || queryLower.includes('แพงไหม') || queryLower.includes('รุ่นที่ 12') || queryLower.includes('เหลือ') || queryLower.includes('เต็ม')) && 
-        (textToMatch.includes('บาท') || textToMatch.includes('ราคา') || textToMatch.includes('รุ่นที่ 12') || textToMatch.includes('เหลือ'))) {
+    if ((queryLower.includes('ราคา') || queryLower.includes('ค่าใช้จ่าย') || queryLower.includes('กี่บาท') || queryLower.includes('แพงไหม') || queryLower.includes('รุ่นที่ 20') || queryLower.includes('รุ่น 20') || queryLower.includes('เหลือ') || queryLower.includes('เต็ม')) && 
+        (textToMatch.includes('บาท') || textToMatch.includes('ราคา') || textToMatch.includes('รุ่นที่ 20') || textToMatch.includes('รุ่น 20') || textToMatch.includes('เหลือ'))) {
       matchScore += 10;
       hasKeyword = true;
     }

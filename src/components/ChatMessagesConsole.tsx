@@ -466,25 +466,25 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
             {/* Top Interactive Flex Card Preview (Simulating LINE Rich Card) */}
             <div className="max-w-xs mx-auto bg-white border border-slate-200 rounded-2xl p-4 shadow-sm text-center space-y-3">
               <div className="text-xs font-bold text-slate-800">
-                โครงการแลกเปลี่ยนระยะสั้น รุ่นที่ 12
+                โครงการแลกเปลี่ยนระยะสั้น รุ่นที่ 20
               </div>
               <div className="text-[11px] text-slate-500 space-y-1 bg-slate-50 p-2.5 rounded-xl text-left border border-slate-100">
-                <div>• ประเทศ: <strong>อเมริกา, อังกฤษ, นิวซีแลนด์, สิงคโปร์</strong></div>
-                <div>• อายุรับสมัคร: <strong>10 - 22 ปี</strong></div>
+                <div>• ประเทศ: <strong>อเมริกา, อังกฤษ, นิวซีแลนด์, แคนาดา, สิงคโปร์</strong></div>
+                <div>• อายุรับสมัคร: <strong>10 - 22 ปี (สมัครได้เลย ไม่ต้องสอบ)</strong></div>
                 <div className="mt-2 text-center bg-emerald-50 text-emerald-700 font-bold text-xs py-1 rounded-lg border border-emerald-200 flex items-center justify-center gap-1">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>เปิดรับสมัครแล้ววันนี้!</span>
+                  <span>เปิดรับสมัครแล้ว เดินทาง เม.ย. 2570!</span>
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <a 
-                  href="https://ingenius.co.th" 
+                  href="https://engenius.co.th/wp-content/uploads/2026/06/Short-Exchange-Programs-%E0%B8%A3%E0%B8%B8%E0%B9%88%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88-20-April-2027-.pdf" 
                   target="_blank" 
                   rel="noreferrer"
                   className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-1"
                 >
-                  <span>ดูเว็บไซต์</span>
+                  <span>โหลดโบร์ชัวร์ PDF</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
                 <button 
