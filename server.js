@@ -155,7 +155,7 @@ function searchSupabaseRAG(userQuery) {
 
   for (const item of knowledgeDatabase) {
     let score = 0;
-    
+
     // Check keywords array match
     for (const kw of item.keywords) {
       if (queryLower.includes(kw.toLowerCase())) {
@@ -243,7 +243,7 @@ async function generateNongIngkyReply(userMessage, ragResult) {
   }
 
   // Fallback with sales suggestion & link
-  return hasContext 
+  return hasContext
     ? `${ragResult.content.split('\nคำตอบจากคลัง DB: ')[1] || 'ยินดีให้ข้อมูลค่ะ'} หากมีข้อสงสัยเพิ่มเติมสอบถามแอดมินได้เลยนะคะ 💕`
     : 'ขออภัยค่ะ ข้อมูลส่วนนี้ยังไม่มีในระบบเลยค่ะ 💕 แต่ทาง Engenius มีโครงการแลกเปลี่ยนระยะสั้น รุ่น 20 (อเมริกา อังกฤษ นิวซีแลนด์ แคนาดา สิงคโปร์) เริ่มต้น 49,000 บ. รวมถึงคอร์สเรียนภาษาตัวต่อตัวค่ะ ลูกค้าสนใจดูเป็นตัวอื่นแทนไหมคะ ✨';
 }
@@ -268,9 +268,9 @@ const userProfilesCache = {};
 
 async function getLINEUserProfile(userId) {
   if (!userId || userId === 'LINE_User') {
-    return { 
-      displayName: 'ลูกค้าจาก LINE OA', 
-      pictureUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png' 
+    return {
+      displayName: 'ลูกค้าจาก LINE OA',
+      pictureUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png'
     };
   }
   if (userProfilesCache[userId]) return userProfilesCache[userId];
@@ -291,9 +291,9 @@ async function getLINEUserProfile(userId) {
   } catch (err) {
     console.error('Failed to fetch LINE profile:', err.message);
   }
-  return { 
-    displayName: `LINE User (${userId.substring(0, 6)})`, 
-    pictureUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png' 
+  return {
+    displayName: `LINE User (${userId.substring(0, 6)})`,
+    pictureUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png'
   };
 }
 
@@ -432,10 +432,10 @@ export function requestListener(req, res) {
   // GET Live Messages & Real LINE Users
   if (req.method === 'GET' && (req.url === '/api/line/messages' || req.url === '/api/chats')) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ 
-      success: true, 
+    res.end(JSON.stringify({
+      success: true,
       users: Object.values(liveUsersMap),
-      messages: liveChatLogs 
+      messages: liveChatLogs
     }));
     return;
   }
@@ -455,7 +455,7 @@ export function requestListener(req, res) {
             liveUsersMap[line_user_id].pausedUntil = null;
             liveUsersMap[line_user_id].pauseDurationHours = null;
           }
-          
+
           const resumeText = 'น้องบอทเปิดใช้งานและพร้อมกลับมาช่วยตอบคำถามตามปกติแล้วค่ะ สามารถพิมพ์คำถามสอบถามได้เลยนะคะ';
           liveChatLogs.push({
             id: Date.now(),
@@ -581,7 +581,7 @@ export function requestListener(req, res) {
                   liveUsersMap[lineUserId].pausedUntil = null;
                   liveUsersMap[lineUserId].pauseDurationHours = null;
                 }
-                
+
                 const resumeText = 'น้องบอทเปิดใช้งานและพร้อมกลับมาช่วยตอบคำถามตามปกติแล้วค่ะ สามารถพิมพ์คำถามสอบถามได้เลยนะคะ';
                 liveChatLogs.push({
                   id: Date.now() + 1,
@@ -603,7 +603,7 @@ export function requestListener(req, res) {
             const isAdminKeyword = /ติดต่อแอดมิน|แอดมิน|เจ้าหน้าที่|ขอสายแอดมิน|คุยกับคน|ติดต่อเจ้าหน้าที่|ขอคุยกับแอดมิน|admin/i.test(userText);
             if (isAdminKeyword) {
               const askPauseText = 'รับทราบค่ะ คุณลูกค้าต้องการให้ปิดการทำงานของน้องบอทชั่วคราวเพื่อให้แอดมินเจ้าหน้าที่ดูแลกี่ชั่วโมงดีคะ?\n\nสามารถเลือกเวลาที่ต้องการปิดด้านล่างได้เลยนะคะ (เมื่อต้องการเปิดบอทอีกครั้ง สามารถพิมพ์คำว่า "เปิดบอท" ได้ทุกเมื่อค่ะ):';
-              
+
               liveChatLogs.push({
                 id: Date.now() + 1,
                 sender: 'bot',
