@@ -26,6 +26,11 @@ import {
 import { ChatMessage, KnowledgeBaseItem, KnowledgeArticleItem } from '../types/schema';
 import { generateMockVector, computeCosineSimilarity } from '../data/mockData';
 
+const MANUAL_CHAT_API_BASE_URL =
+  typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    ? 'http://localhost:3001'
+    : '';
+
 interface ChatMessagesConsoleProps {
   chatMessages: ChatMessage[];
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
@@ -163,17 +168,42 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
   const startManualChat = () => {
     setIsAdminHandover(true);
     setManualChatUntil(Date.now() + 60 * 60 * 1000);
+    void syncManualChat('start');
   };
 
   const extendManualChat = () => {
     setManualChatUntil((currentUntil) =>
       Math.max(currentUntil || Date.now(), Date.now()) + 60 * 60 * 1000
     );
+    void syncManualChat('extend');
   };
 
   const endManualChat = () => {
     setIsAdminHandover(false);
     setManualChatUntil(null);
+    fetch(`${MANUAL_CHAT_API_BASE_URL}/api/line/manual-chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ line_user_id: selectedUser.id, action: 'end' })
+    }).catch(() => {
+      // Keep the dashboard usable when the local backend is offline.
+    });
+  };
+
+  const syncManualChat = async (action: 'start' | 'extend') => {
+    try {
+      const res = await fetch(`${MANUAL_CHAT_API_BASE_URL}/api/line/manual-chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ line_user_id: selectedUser.id, action })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.pausedUntil) setManualChatUntil(data.pausedUntil);
+      }
+    } catch {
+      // Keep the dashboard timer working as a local fallback.
+    }
   };
 
   const remainingManualChatMinutes = getRemainingManualChatMinutes(manualChatUntil);

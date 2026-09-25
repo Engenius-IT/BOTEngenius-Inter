@@ -478,6 +478,75 @@ export function requestListener(req, res) {
     return;
   }
 
+  // POST Manual Chat Session Endpoint from Web UI
+  if (req.method === 'POST' && req.url === '/api/line/manual-chat') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const data = JSON.parse(body || '{}');
+        const { line_user_id, action = 'start' } = data;
+
+        if (!line_user_id) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'line_user_id is required' }));
+          return;
+        }
+
+        if (!['start', 'extend', 'end'].includes(action)) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Unsupported manual chat action' }));
+          return;
+        }
+
+        const currentUntil = userPauseMap[line_user_id] || Date.now();
+        let pausedUntil = null;
+        let status = 'ดำเนินการ';
+        let message = 'น้องอิงกี้กลับมาเปิดใช้งานและพร้อมตอบคำถามตามปกติแล้วค่ะ';
+
+        if (action === 'start') {
+          pausedUntil = Date.now() + 60 * 60 * 1000;
+          status = 'แชทแมนนวล 1 ชม.';
+          message = 'ขณะนี้แอดมินกำลังเข้ามาดูแลแชทให้ค่ะ\nน้องอิงกี้จะหยุดตอบชั่วคราวเป็นเวลา 1 ชั่วโมงนะคะ';
+        } else if (action === 'extend') {
+          pausedUntil = Math.max(currentUntil, Date.now()) + 60 * 60 * 1000;
+          status = 'แชทแมนนวล';
+          message = 'แอดมินขยายเวลาแชทแมนนวลให้อีก 1 ชั่วโมงแล้วค่ะ\nระหว่างนี้แอดมินจะดูแลและตอบกลับให้เองนะคะ';
+        }
+
+        if (pausedUntil) {
+          userPauseMap[line_user_id] = pausedUntil;
+        } else {
+          delete userPauseMap[line_user_id];
+        }
+
+        if (liveUsersMap[line_user_id]) {
+          liveUsersMap[line_user_id].status = status;
+          liveUsersMap[line_user_id].pausedUntil = pausedUntil;
+          liveUsersMap[line_user_id].pauseDurationHours = pausedUntil ? 1 : null;
+        }
+
+        liveChatLogs.push({
+          id: Date.now(),
+          sender: action === 'end' ? 'bot' : 'admin',
+          platform: 'line',
+          message,
+          line_user_id,
+          created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        });
+
+        await pushLINE(line_user_id, message);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, action, pausedUntil }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
   // POST Admin Push Message Endpoint from Web UI
   if (req.method === 'POST' && (req.url.includes('send') || req.url.includes('messages'))) {
     let body = '';
@@ -769,5 +838,4 @@ if (!process.env.VERCEL) {
 }
 
 export default requestListener;
-
 
