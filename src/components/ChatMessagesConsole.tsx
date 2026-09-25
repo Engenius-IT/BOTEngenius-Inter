@@ -122,6 +122,7 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
   const [isAdminHandover, setIsAdminHandover] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [now, setNow] = useState<number>(Date.now());
+  const [manualChatUntil, setManualChatUntil] = useState<number | null>(null);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -151,6 +152,37 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
       return `${seconds} วินาที`;
     }
   };
+
+  const getRemainingManualChatMinutes = (manualUntil?: number | null) => {
+    if (!manualUntil) return null;
+    const diff = manualUntil - now;
+    if (diff <= 0) return null;
+    return Math.ceil(diff / 60000);
+  };
+
+  const startManualChat = () => {
+    setIsAdminHandover(true);
+    setManualChatUntil(Date.now() + 60 * 60 * 1000);
+  };
+
+  const extendManualChat = () => {
+    setManualChatUntil((currentUntil) =>
+      Math.max(currentUntil || Date.now(), Date.now()) + 60 * 60 * 1000
+    );
+  };
+
+  const endManualChat = () => {
+    setIsAdminHandover(false);
+    setManualChatUntil(null);
+  };
+
+  const remainingManualChatMinutes = getRemainingManualChatMinutes(manualChatUntil);
+
+  useEffect(() => {
+    if (isAdminHandover && manualChatUntil && now >= manualChatUntil) {
+      endManualChat();
+    }
+  }, [isAdminHandover, manualChatUntil, now]);
 
   // Selected User Object
   const selectedUser = users.find(u => u.id === selectedUserId) || users[0];
@@ -407,7 +439,7 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
               <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
                 <button
                   type="button"
-                  onClick={() => setIsAdminHandover(false)}
+                  onClick={endManualChat}
                   className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     !isAdminHandover ? 'bg-[#06C755] text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
@@ -417,7 +449,7 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setIsAdminHandover(true)}
+                  onClick={startManualChat}
                   className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     isAdminHandover ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
@@ -435,6 +467,34 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
             </div>
 
           </div>
+
+          {/* Manual chat session banner */}
+          {isAdminHandover && remainingManualChatMinutes ? (
+            <div className="bg-[#687187] text-white px-3 py-1.5 flex items-center justify-between gap-2 shrink-0">
+              <div className="flex items-start gap-1.5 min-w-0 text-[11px] leading-tight">
+                <span className="mt-0.5 text-[13px]" aria-hidden="true">◉</span>
+                <div className="min-w-0">
+                  <p className="font-semibold truncate">กำลังแชทแบบแมนนวล</p>
+                  <p className="font-semibold">( เหลือเวลา {remainingManualChatMinutes} นาที</p>
+                  <button
+                    type="button"
+                    onClick={extendManualChat}
+                    className="underline underline-offset-2 hover:text-slate-200 cursor-pointer"
+                  >
+                    ขยายเวลาแชทแบบแมนนวล
+                  </button>
+                  <span> )</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={endManualChat}
+                className="border border-white/80 hover:bg-white/10 rounded-md px-2 py-1 text-[10px] font-semibold whitespace-nowrap transition-colors cursor-pointer"
+              >
+                สิ้นสุดการแชทแบบแมนนวล
+              </button>
+            </div>
+          ) : null}
 
           {/* Active Bot Pause Banner */}
           {selectedUser.pausedUntil && getRemainingPauseTime(selectedUser.pausedUntil) ? (
@@ -610,4 +670,3 @@ export const ChatMessagesConsole: React.FC<ChatMessagesConsoleProps> = ({
 };
 
 export default ChatMessagesConsole;
-
