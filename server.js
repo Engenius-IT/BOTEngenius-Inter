@@ -17,7 +17,8 @@ function loadEnv() {
       if (trimmed && !trimmed.startsWith('#')) {
         const [key, ...valueParts] = trimmed.split('=');
         if (key && valueParts.length > 0) {
-          process.env[key.trim()] = valueParts.join('=').trim();
+          const rawValue = valueParts.join('=').trim();
+          process.env[key.trim()] = rawValue.replace(/^(['"])(.*)\1$/, '$2');
         }
       }
     });
@@ -33,6 +34,16 @@ function getLineAccessToken() {
 
 function getDeepseekApiKey() {
   return process.env.DEEPSEEK_API_KEY || '';
+}
+
+function getDeepseekModel() {
+  return process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+}
+
+const missingRuntimeEnv = ['LINE_ACCESS_TOKEN', 'DEEPSEEK_API_KEY']
+  .filter((key) => !process.env[key]);
+if (missingRuntimeEnv.length > 0) {
+  console.error(`[Config] Missing required environment variables: ${missingRuntimeEnv.join(', ')}`);
 }
 
 
@@ -191,14 +202,18 @@ async function sendLineLoadingAnimation(userId, seconds = 5) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${LINE_ACCESS_TOKEN}`
+        'Authorization': `Bearer ${getLineAccessToken()}`
       },
       body: JSON.stringify({
         chatId: userId,
         loadingSeconds: seconds
       })
     });
-    console.log(`⏳ [LINE Typing Indicator Sent to ${userId}] Status: ${res.status}`);
+    if (!res.ok) {
+      console.error(`LINE Loading Animation Failed: ${res.status} ${await res.text()}`);
+    } else {
+      console.log(`⏳ [LINE Typing Indicator Sent to ${userId}] Status: ${res.status}`);
+    }
   } catch (err) {
     console.error('LINE Loading Animation Error:', err.message);
   }
@@ -224,7 +239,7 @@ async function generateNongIngkyReply(userMessage, ragResult) {
         'Authorization': `Bearer ${getDeepseekApiKey()}`
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: getDeepseekModel(),
         messages: [
           { role: 'system', content: fullInstruction },
           { role: 'user', content: userMessage }
@@ -238,6 +253,7 @@ async function generateNongIngkyReply(userMessage, ragResult) {
     if (data.choices && data.choices[0] && data.choices[0].message) {
       return data.choices[0].message.content.trim();
     }
+    console.error(`DeepSeek API Error: ${res.status} ${JSON.stringify(data).slice(0, 500)}`);
   } catch (err) {
     console.error('AI API Call Error:', err.message);
   }
@@ -359,7 +375,11 @@ async function replyLINEQuickReply(replyToken, text, quickReplyItems) {
         ]
       })
     });
-    console.log(`[LINE QuickReply Sent] Status: ${res.status}`);
+    if (!res.ok) {
+      console.error(`[LINE QuickReply Failed] Status: ${res.status} ${await res.text()}`);
+    } else {
+      console.log(`[LINE QuickReply Sent] Status: ${res.status}`);
+    }
   } catch (err) {
     console.error('[LINE QuickReply Failed]:', err.message);
   }
@@ -380,7 +400,11 @@ async function replyLINE(replyToken, text) {
         messages: [{ type: 'text', text: text }]
       })
     });
-    console.log(`[LINE Reply Sent] Status: ${res.status}`);
+    if (!res.ok) {
+      console.error(`[LINE Reply Failed] Status: ${res.status} ${await res.text()}`);
+    } else {
+      console.log(`[LINE Reply Sent] Status: ${res.status}`);
+    }
   } catch (err) {
     console.error('[LINE Reply Failed]:', err.message);
   }
@@ -401,7 +425,11 @@ async function pushLINE(toUserId, text) {
         messages: [{ type: 'text', text: text }]
       })
     });
-    console.log(`[LINE Push Sent] Status: ${res.status}`);
+    if (!res.ok) {
+      console.error(`[LINE Push Failed] Status: ${res.status} ${await res.text()}`);
+    } else {
+      console.log(`[LINE Push Sent] Status: ${res.status}`);
+    }
   } catch (err) {
     console.error('[LINE Push Failed]:', err.message);
   }
@@ -838,4 +866,3 @@ if (!process.env.VERCEL) {
 }
 
 export default requestListener;
-
