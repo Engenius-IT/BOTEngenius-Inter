@@ -79,7 +79,7 @@ export function ChatbotSimulator({ activeProvider, aiConfig }: ChatbotSimulatorP
     {
       id: '1',
       sender: 'bot',
-      text: 'สวัสดีค่ะ! น้องอิงกี้ เป็น AI Assistant แอดมินตอบแชทจาก Engenius ยินดีให้บริการค่ะ คุณสามารถพิมพ์สอบถามคำถาม หรือเลือกจากหัวข้อตัวอย่างด้านล่างได้เลยนะคะ น้องอิงกี้จะสรุปคำตอบสั้นกระชับ อ่านเข้าใจง่ายให้คุณค่ะ',
+      text: 'สวัสดีค่ะ น้องอิงกี้จาก Engenius ยินดีให้คำปรึกษาค่ะ 💕 สนใจโครงการแลกเปลี่ยนระยะสั้น รุ่นที่ 20, Work and Travel USA 2027 หรือคอร์สเรียนภาษาคะ? บอกโปรแกรมหรือเรื่องที่อยากรู้ได้เลยนะคะ อิงกี้ช่วยสรุปรายละเอียด ค่าใช้จ่าย และคุณสมบัติให้ตรงกับที่สนใจค่ะ ✨',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       ragDetails: {
         searchedTable: 'public.knowledge_base',
