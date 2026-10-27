@@ -79,7 +79,7 @@ export function ChatbotSimulator({ activeProvider, aiConfig }: ChatbotSimulatorP
     {
       id: '1',
       sender: 'bot',
-      text: 'สวัสดีค่ะ น้องอิงกี้จาก Engenius ยินดีให้คำปรึกษาค่ะ 💕 สนใจโครงการแลกเปลี่ยนระยะสั้น รุ่นที่ 20, Work and Travel USA 2027 หรือคอร์สเรียนภาษาคะ? บอกโปรแกรมหรือเรื่องที่อยากรู้ได้เลยนะคะ อิงกี้ช่วยสรุปรายละเอียด ค่าใช้จ่าย และคุณสมบัติให้ตรงกับที่สนใจค่ะ ✨',
+      text: 'สวัสดีค่ะ 💕 อิงกี้จาก Engenius พร้อมช่วยแนะนำค่ะ วันนี้สนใจโครงการไหนคะ? 1️⃣ โครงการแลกเปลี่ยนระยะสั้น รุ่นที่ 20 2️⃣ Work and Travel USA 2027 สำหรับนักศึกษา พิมพ์ชื่อโครงการ หรือถามเรื่องค่าใช้จ่าย คุณสมบัติ และขั้นตอนสมัครได้เลยนะคะ ✨',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       ragDetails: {
         searchedTable: 'public.knowledge_base',
