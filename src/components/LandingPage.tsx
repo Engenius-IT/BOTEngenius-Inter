@@ -21,8 +21,13 @@ import {
   Send,
   HelpCircle,
   BarChart3,
-  ChevronRight
+  ChevronRight,
+  BriefcaseBusiness,
+  BadgePercent,
+  GraduationCap,
+  Globe2
 } from 'lucide-react';
+import { workAndTravel2027 } from '../data/workAndTravel2027';
 
 interface LandingPageProps {
   onOpenLogin: () => void;
@@ -83,6 +88,7 @@ export function LandingPage({ onOpenLogin }: LandingPageProps) {
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
             <a href="#features" className="hover:text-blue-600 transition-colors">ฟีเจอร์การทำงาน</a>
             <a href="#rag-system" className="hover:text-blue-600 transition-colors">คลังความรู้อัจฉริยะ</a>
+            <a href="#work-travel-2027" className="hover:text-blue-600 transition-colors">Work &amp; Travel 2027</a>
             <a href="#models" className="hover:text-blue-600 transition-colors">รองรับ Multi-AI</a>
             <a href="#demo" className="hover:text-blue-600 transition-colors">ตัวอย่างการตอบ</a>
           </nav>
@@ -178,6 +184,149 @@ export function LandingPage({ onOpenLogin }: LandingPageProps) {
               <div className="text-xs text-slate-500">เสถียรและปลอดภัย</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Work and Travel USA 2027 program details */}
+      <section id="work-travel-2027" className="scroll-mt-20 bg-gradient-to-b from-blue-50/70 to-white border-y border-blue-100 px-4 py-16 md:px-8 md:py-20">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-blue-700 border border-blue-200 text-xs font-bold mb-4">
+              <Globe2 className="w-4 h-4" />
+              ENGENIUS INTERNATIONAL
+            </div>
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+              Work and Travel <span className="text-blue-600">USA 2027</span>
+            </h2>
+            <p className="text-lg md:text-xl font-semibold text-slate-700 mt-3">{workAndTravel2027.tagline}</p>
+            <p className="text-slate-600 leading-relaxed mt-4">{workAndTravel2027.overview}</p>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-7 space-y-5">
+              <article className="bg-white rounded-2xl border border-slate-200 p-6 md:p-7 shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+                    <BriefcaseBusiness className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900">ประสบการณ์ทำงานและท่องเที่ยวในสหรัฐฯ</h3>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed">{workAndTravel2027.programPeriod}</p>
+                <p className="text-sm text-slate-600 leading-relaxed mt-3">{workAndTravel2027.travelPeriod}</p>
+                <p className="text-xs text-slate-500 leading-relaxed mt-4 p-3 rounded-xl bg-amber-50 border border-amber-100">{workAndTravel2027.legalNote}</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-2 mt-4 text-xs">
+                  <a className="text-blue-700 underline underline-offset-2" href="https://j1visa.state.gov/summer-work-travel-resource-page/" target="_blank" rel="noreferrer">ข้อกำหนด Summer Work Travel จาก BridgeUSA</a>
+                  <a className="text-blue-700 underline underline-offset-2" href="https://j1visa.state.gov/participants/current/adjustments-and-extensions/" target="_blank" rel="noreferrer">เงื่อนไขช่วงเดินทางหลังจบโครงการ</a>
+                </div>
+              </article>
+
+              <article className="bg-white rounded-2xl border border-slate-200 p-6 md:p-7 shadow-sm">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900">ประสบการณ์ของ Engenius</h3>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed">{workAndTravel2027.history}</p>
+              </article>
+            </div>
+
+            <aside className="lg:col-span-5 bg-slate-900 text-white rounded-2xl p-6 md:p-7 shadow-xl">
+              <div className="flex items-center gap-2 text-amber-300 text-sm font-bold">
+                <BadgePercent className="w-5 h-5" />
+                {workAndTravel2027.applicationSeasons}
+              </div>
+              <div className="mt-4 rounded-xl bg-white/10 border border-white/10 p-4 text-center">
+                <p className="text-sm text-slate-300">{workAndTravel2027.applicationFee}</p>
+                <p className="text-4xl font-extrabold text-amber-300 mt-1">3,900 <span className="text-base">บาท</span></p>
+                <p className="text-xs text-red-200 font-semibold mt-2">EARLY BIRD — {workAndTravel2027.earlyBird}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {workAndTravel2027.benefits.map((benefit) => (
+                  <span key={benefit} className="rounded-full bg-blue-500/20 border border-blue-300/20 px-3 py-1.5 text-xs text-blue-100">{benefit}</span>
+                ))}
+              </div>
+              <p className="text-sm text-slate-300 mt-5 mb-3">สมัครเป็นคู่หรือกลุ่ม รับส่วนลดต่อคนตามจำนวนผู้สมัคร</p>
+              <div className="space-y-3">
+                {workAndTravel2027.promotions.map((promotion) => (
+                  <div key={promotion.group} className="flex items-center justify-between gap-3 rounded-xl bg-white/10 border border-white/10 px-4 py-3">
+                    <span className="text-sm text-slate-100">{promotion.group}</span>
+                    <strong className="text-sm md:text-base text-amber-300 text-right">{promotion.discount}</strong>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 rounded-xl bg-blue-500/20 border border-blue-300/20 p-4">
+                <p className="text-sm font-bold text-white">{workAndTravel2027.premiumJob}</p>
+                <p className="text-xs text-blue-100 mt-1">{workAndTravel2027.valueProposition}</p>
+              </div>
+              <p className="text-xs text-slate-300 mt-4">รีบจองสิทธิ์ก่อนเต็ม: ตำแหน่งงานจัดสรรแบบ First Come, First Served จำนวนรับมีจำกัด</p>
+              <div className="mt-4 pt-4 border-t border-white/15 text-xs text-slate-200 space-y-1.5">
+                <p>LINE จากโปสเตอร์: <a className="font-semibold text-white underline" href="https://line.me/R/ti/p/@eng11" target="_blank" rel="noreferrer">{workAndTravel2027.contact.line}</a></p>
+                <p>LINE หน้าเว็บหลัก: <a className="font-semibold text-white underline" href="https://line.me/R/ti/p/@engenius_inter" target="_blank" rel="noreferrer">{workAndTravel2027.contact.officialLine}</a></p>
+                <p>โทร: <a className="font-semibold text-white underline" href="tel:021174742">{workAndTravel2027.contact.phone}</a></p>
+                <p>เว็บไซต์: <a className="font-semibold text-white underline" href="https://www.engenius.co.th" target="_blank" rel="noreferrer">{workAndTravel2027.contact.website}</a></p>
+                <p>Facebook: {workAndTravel2027.contact.facebook} · Instagram: {workAndTravel2027.contact.instagram}</p>
+              </div>
+            </aside>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            <article className="bg-white rounded-2xl border border-slate-200 p-6 md:p-7 shadow-sm">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                  <Globe2 className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">วัตถุประสงค์โครงการ</h3>
+              </div>
+              <ul className="space-y-3">
+                {workAndTravel2027.objectives.map((objective) => (
+                  <li key={objective} className="flex gap-3 text-sm text-slate-600 leading-relaxed">
+                    <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 text-emerald-600" />
+                    <span>{objective}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="bg-white rounded-2xl border border-slate-200 p-6 md:p-7 shadow-sm">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-violet-50 text-violet-700 flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900">คุณสมบัติผู้เข้าร่วมโครงการ</h3>
+              </div>
+              <ul className="grid sm:grid-cols-2 gap-x-5 gap-y-3">
+                {workAndTravel2027.eligibility.map((criterion) => (
+                  <li key={criterion} className="flex gap-3 text-sm text-slate-600 leading-relaxed">
+                    <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 text-blue-600" />
+                    <span>{criterion}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+
+          <article className="bg-blue-950 text-white rounded-2xl p-6 md:p-7 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-blue-200">Spring &amp; Summer New Premium Location</p>
+                <h3 className="text-xl font-bold mt-1">ตำแหน่งงานที่เปิดรับ</h3>
+              </div>
+              <span className="text-sm text-emerald-200 font-semibold">เปิดรับสมัครแล้ว</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {workAndTravel2027.jobLocations.map((location) => (
+                <span key={location} className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm">{location}</span>
+              ))}
+            </div>
+            <a className="inline-block mt-5 text-xs text-blue-200 underline underline-offset-2" href={workAndTravel2027.officialSource} target="_blank" rel="noreferrer">
+              ดูข้อมูลโครงการฉบับเต็มบนเว็บไซต์ Engenius
+            </a>
+          </article>
+
+          <p className="text-center text-xs text-slate-500 max-w-4xl mx-auto">
+            {workAndTravel2027.tagline} — โครงการ Engenius Work and Travel in USA ทั้งนี้กำหนดการ คุณสมบัติ การอนุมัติงาน และส่วนลดเป็นไปตามเงื่อนไขของแต่ละรอบและผู้สนับสนุนโครงการ
+          </p>
         </div>
       </section>
 
